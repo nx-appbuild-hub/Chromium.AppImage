@@ -13,10 +13,8 @@ LATEST="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapsh
 REVISION=$(shell curl -s -S $(LATEST))
 PWD:=$(shell pwd)
 
-all: 
+all: clean
 
-	mkdir --parents $(PWD)/build
-	mkdir --parents $(PWD)/build/Boilerplate.AppDir
 	mkdir --parents $(PWD)/build/Boilerplate.AppDir/chromium
 	
 

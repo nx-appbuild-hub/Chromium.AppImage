@@ -9,47 +9,37 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-PWD:=$(shell pwd)
 LATEST="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media"
 REVISION=$(shell curl -s -S $(LATEST))
+PWD:=$(shell pwd)
 
+all:  clean
 
-all: clean
 	mkdir --parents $(PWD)/build
-	mkdir --parents $(PWD)/build/AppDir	
-	mkdir --parents $(PWD)/build/AppDir/chromium		
-	mkdir --parents $(PWD)/build/AppDir/share
+	mkdir --parents $(PWD)/build/Boilerplate.AppDir
+	mkdir --parents $(PWD)/build/Boilerplate.AppDir/chromium
+	
+
+	apprepo --destination=$(PWD)/build appdir boilerplate libatk1.0-0 libglib2.0-0 shared-mime-info libffi7 libselinux1 libpango-1.0-0 \
+											libgdk-pixbuf2.0-0 librsvg2-2 adwaita-icon-theme libgtk-3-0 libncurses5 libncurses6 gsettings-desktop-schemas
 
 	wget --output-document=${PWD}/build/build.zip  https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
 	unzip ${PWD}/build/build.zip -d ${PWD}/build
 
-	wget --output-document=$(PWD)/build/build.rpm http://mirror.centos.org/centos/8/BaseOS/x86_64/os/Packages/zlib-1.2.11-16.el8_2.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	echo "LD_LIBRARY_PATH=\$${LD_LIBRARY_PATH}:\$${APPDIR}/chromium" >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo "export LD_LIBRARY_PATH=\$${LD_LIBRARY_PATH}" >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo "exec \$${APPDIR}/chromium/chrome \"\$${@}\"" >> $(PWD)/build/Boilerplate.AppDir/AppRun
 
-	wget --output-document=$(PWD)/build/build.rpm http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/gtk3-3.22.30-5.el8.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	cp --force --recursive $(PWD)/build/chrome-linux/* $(PWD)/build/Boilerplate.AppDir/chromium
 
-	wget --output-document=$(PWD)/build/build.rpm https://ftp.lysator.liu.se/pub/opensuse/distribution/leap/15.2/repo/oss/x86_64/libatk-1_0-0-2.34.1-lp152.1.7.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	rm --force $(PWD)/build/Boilerplate.AppDir/*.desktop
 
-	wget --output-document=$(PWD)/build/build.rpm https://ftp.lysator.liu.se/pub/opensuse/distribution/leap/15.2/repo/oss/x86_64/libatk-bridge-2_0-0-2.34.1-lp152.1.5.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	cp --force $(PWD)/AppDir/*.desktop $(PWD)/build/Boilerplate.AppDir/
+	cp --force $(PWD)/AppDir/*.png $(PWD)/build/Boilerplate.AppDir/ || true
+	cp --force $(PWD)/AppDir/*.svg $(PWD)/build/Boilerplate.AppDir/ || true
 
-	wget --output-document=$(PWD)/build/build.rpm https://ftp.lysator.liu.se/pub/opensuse/distribution/leap/15.2/repo/oss/x86_64/libatspi0-2.34.0-lp152.2.4.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	cp --force --recursive ${PWD}/build/chrome-linux/* $(PWD)/build/AppDir/chromium
-	cp --force --recursive $(PWD)/build/usr/* $(PWD)/build/AppDir/
-	cp --force --recursive $(PWD)/AppDir/* $(PWD)/build/AppDir
-
-	chmod +x $(PWD)/build/AppDir/AppRun
-	chmod +x $(PWD)/build/AppDir/*.desktop
-	
-	rm -rf $(PWD)/build/AppDir/lib
-
-	export ARCH=x86_64 && bin/appimagetool.AppImage $(PWD)/build/AppDir $(PWD)/Chromium.AppImage
-
+	export ARCH=x86_64 && $(PWD)/bin/appimagetool.AppImage $(PWD)/build/Boilerplate.AppDir $(PWD)/Chromium.AppImage
 	chmod +x $(PWD)/Chromium.AppImage
 
 clean:
-	rm -rf 	$(PWD)/build
+	rm -rf $(PWD)/build

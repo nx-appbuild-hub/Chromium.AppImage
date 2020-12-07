@@ -13,35 +13,35 @@ LATEST="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapsh
 REVISION=$(shell curl -s -S $(LATEST))
 PWD:=$(shell pwd)
 
-all:  clean
+all: 
 
 	mkdir --parents $(PWD)/build
 	mkdir --parents $(PWD)/build/Boilerplate.AppDir
 	mkdir --parents $(PWD)/build/Boilerplate.AppDir/chromium
 	
 
-	apprepo --destination=$(PWD)/build appdir boilerplate libatk1.0-0 libglib2.0-0 shared-mime-info libffi7 libselinux1 libpango-1.0-0 \
-											libgdk-pixbuf2.0-0 librsvg2-2 adwaita-icon-theme libgtk-3-0 libncurses5 libncurses6 gsettings-desktop-schemas
+	# apprepo --destination=$(PWD)/build appdir boilerplate libatk1.0-0 libglib2.0-0 shared-mime-info libffi7 libselinux1 libpango-1.0-0 \
+	# 										libgdk-pixbuf2.0-0 librsvg2-2 adwaita-icon-theme libgtk-3-0 libncurses5 libncurses6 gsettings-desktop-schemas
 
-	wget --output-document=${PWD}/build/build.zip  https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
-	unzip ${PWD}/build/build.zip -d ${PWD}/build
+	# wget --output-document=${PWD}/build/build.zip  https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
+	# unzip ${PWD}/build/build.zip -d ${PWD}/build
 
-	echo "" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "LD_LIBRARY_PATH=\$${LD_LIBRARY_PATH}:\$${APPDIR}/chromium" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "export LD_LIBRARY_PATH=\$${LD_LIBRARY_PATH}" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "UUC_VALUE=`cat /proc/sys/kernel/unprivileged_userns_clone 2> /dev/null`" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "if [ -z \"\$${UUC_VALUE}\" ]" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "    then" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "        exec \$${APPDIR}/chromium/chrome --no-sandbox \"\$${@}\"" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "    else" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "        exec \$${APPDIR}/chromium/chrome \"\$${@}\"" >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo "    fi" >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${APPDIR}/chromium' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'UUC_VALUE=`cat /proc/sys/kernel/unprivileged_userns_clone 2> /dev/null`' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'if [ -z "$${UUC_VALUE}" ]' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '    then' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '        exec $${APPDIR}/chromium/chrome --no-sandbox "$${@}"' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '    else' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '        exec $${APPDIR}/chromium/chrome "$${@}"' >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '    fi' >> $(PWD)/build/Boilerplate.AppDir/AppRun
 
 
 	cp --force --recursive $(PWD)/build/chrome-linux/* $(PWD)/build/Boilerplate.AppDir/chromium

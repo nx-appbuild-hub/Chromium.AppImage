@@ -20,11 +20,11 @@ all:
 	mkdir --parents $(PWD)/build/Boilerplate.AppDir/chromium
 	
 
-	# apprepo --destination=$(PWD)/build appdir boilerplate libatk1.0-0 libglib2.0-0 shared-mime-info libffi7 libselinux1 libpango-1.0-0 \
-	# 										libgdk-pixbuf2.0-0 librsvg2-2 adwaita-icon-theme libgtk-3-0 libncurses5 libncurses6 gsettings-desktop-schemas
+	apprepo --destination=$(PWD)/build appdir boilerplate libatk1.0-0 libglib2.0-0 shared-mime-info libffi7 libselinux1 libpango-1.0-0 \
+											libgdk-pixbuf2.0-0 librsvg2-2 adwaita-icon-theme libgtk-3-0 libncurses5 libncurses6 gsettings-desktop-schemas
 
-	# wget --output-document=${PWD}/build/build.zip  https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
-	# unzip ${PWD}/build/build.zip -d ${PWD}/build
+	wget --output-document=${PWD}/build/build.zip  https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
+	unzip ${PWD}/build/build.zip -d ${PWD}/build
 
 	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun

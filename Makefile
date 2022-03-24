@@ -9,37 +9,28 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-LATEST="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media"
-REVISION=$(shell curl -s -S $(LATEST))
-PWD:=$(shell pwd)
+PWD := $(shell pwd)
+
+DOCKER_COMPOSE:=docker-compose -f $(PWD)/docker-compose.yaml
+
+.EXPORT_ALL_VARIABLES:
+CID=$(shell basename $(PWD) | tr -cd '[:alnum:]' | tr A-Z a-z)
+UID=$(shell id -u)
+GID=$(shell id -g)
+
+.PHONY: all
+
 
 all: clean
-
-	mkdir --parents $(PWD)/build/Boilerplate.AppDir/chromium
-	apprepo --destination=$(PWD)/build appdir boilerplate libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
-
-	wget --output-document=${PWD}/build/build.zip  https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
-	unzip ${PWD}/build/build.zip -d ${PWD}/build
-
-	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo 'LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${APPDIR}/chromium' >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo 'export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}' >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo '' >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo 'exec $${APPDIR}/chromium/chrome "$${@}"' >> $(PWD)/build/Boilerplate.AppDir/AppRun
-
-
-	cp --force --recursive $(PWD)/build/chrome-linux/* $(PWD)/build/Boilerplate.AppDir/chromium
-
-	rm --force $(PWD)/build/Boilerplate.AppDir/*.desktop
-
-	cp --force $(PWD)/AppDir/*.desktop $(PWD)/build/Boilerplate.AppDir/
-	cp --force $(PWD)/AppDir/*.png $(PWD)/build/Boilerplate.AppDir/ || true
-	cp --force $(PWD)/AppDir/*.svg $(PWD)/build/Boilerplate.AppDir/ || true
-
-	export ARCH=x86_64 && $(PWD)/bin/appimagetool.AppImage $(PWD)/build/Boilerplate.AppDir $(PWD)/Chromium.AppImage
-	chmod +x $(PWD)/Chromium.AppImage
+	$(DOCKER_COMPOSE) stop
+	$(DOCKER_COMPOSE) up --build --no-start
+	$(DOCKER_COMPOSE) up -d  "appimage"
+	$(DOCKER_COMPOSE) run    "appimage" make all
+	$(DOCKER_COMPOSE) run    "appimage" chown -R $(UID):$(GID) ./
+	$(DOCKER_COMPOSE) stop
 
 clean:
-	rm -rf $(PWD)/build
+	$(DOCKER_COMPOSE) up -d  "appimage"
+	$(DOCKER_COMPOSE) run    "appimage" make clean
+	$(DOCKER_COMPOSE) rm --stop --force
+

@@ -34,6 +34,7 @@ all: clean init
 	cp --force --recursive $(PWD)/build/chrome-linux/* $(PWD)/build/Boilerplate.AppDir/chromium
 
 	rm --force $(PWD)/build/Boilerplate.AppDir/*.desktop
+	rm --force $(PWD)/build/Boilerplate.AppDir/lib64/libstdc++.so.6*
 
 	cp --force $(PWD)/AppDir/*.desktop $(PWD)/build/Boilerplate.AppDir/
 	cp --force $(PWD)/AppDir/*.png     $(PWD)/build/Boilerplate.AppDir/       || true

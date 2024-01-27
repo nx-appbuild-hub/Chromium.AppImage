@@ -31,7 +31,7 @@ all: clean init
 	echo 'exec $${APPDIR}/chromium/chrome "$${@}"'                    >> $(PWD)/build/Boilerplate.AppDir/AppRun
 
 
-	wget --output-document=${PWD}/build/build.zip  https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
+	wget --output-document=${PWD}/build/build.zip https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
 	unzip ${PWD}/build/build.zip -d ${PWD}/build
 
 	cp --force --recursive $(PWD)/build/chrome-linux/* $(PWD)/build/Boilerplate.AppDir/chromium
@@ -45,7 +45,7 @@ all: clean init
 	cp --force $(PWD)/AppDir/*.png     $(PWD)/build/Boilerplate.AppDir/       || true
 	cp --force $(PWD)/AppDir/*.svg     $(PWD)/build/Boilerplate.AppDir/       || true
 
-	export ARCH=x86_64 && $(PWD)/bin/appimagetool.AppImage $(PWD)/build/Boilerplate.AppDir $(PWD)/Chromium.AppImage
+	export ARCH=x86_64 && ./appimagetool $(PWD)/build/Boilerplate.AppDir Chromium.AppImage
 	chmod +x $(PWD)/Chromium.AppImage
 
 init:

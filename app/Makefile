@@ -10,14 +10,13 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 REVISION:=$(shell curl -s -S https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media)
-PWD:=$(shell pwd)
 
 .PHONY: all
 
 all: clean init
 
-	mkdir --parents $(PWD)/build/Boilerplate.AppDir/chromium
-	./apprepo --destination=$(PWD)/build appdir boilerplate \
+	mkdir --parents build/Boilerplate.AppDir/chromium
+	./apprepo --destination=build appdir boilerplate \
 	    libgdk-pixbuf2.0-0 libatk1.0-0 libatk-bridge2.0-0 libgtk2.0-0 \
 	    libreadline8 at-spi2-core libpango-1.0-0 libselinux1 \
 	    libgtk-3-0 libwayland-cursor0
@@ -31,22 +30,21 @@ all: clean init
 		 'exec $${APPDIR}/chromium/chrome "$${@}"'                 >> build/Boilerplate.AppDir/AppRun
 
 
-	wget --output-document=${PWD}/build/build.zip https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
-	unzip ${PWD}/build/build.zip -d ${PWD}/build
+	wget --output-document=build/build.zip https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
+	unzip build/build.zip -d build
 
-	cp --force --recursive $(PWD)/build/chrome-linux/* $(PWD)/build/Boilerplate.AppDir/chromium
+	cp --force --recursive build/chrome-linux/* build/Boilerplate.AppDir/chromium
 
-	rm -f $(PWD)/build/Boilerplate.AppDir/*.desktop 		    \
-	      $(PWD)/build/Boilerplate.AppDir/*.png 		  	    \
-	      $(PWD)/build/Boilerplate.AppDir/*.svg 		  	    \
-	      $(PWD)/build/Boilerplate.AppDir/lib64/libstdc++.so.6*
+	rm -f build/Boilerplate.AppDir/*.desktop 		    \
+	      build/Boilerplate.AppDir/*.png 		  	    \
+	      build/Boilerplate.AppDir/*.svg 		  	    \
+	      build/Boilerplate.AppDir/lib64/libstdc++.so.6*
 
-	cp --force $(PWD)/AppDir/*.desktop $(PWD)/build/Boilerplate.AppDir/ || true
-	cp --force $(PWD)/AppDir/*.png     $(PWD)/build/Boilerplate.AppDir/ || true
-	cp --force $(PWD)/AppDir/*.svg     $(PWD)/build/Boilerplate.AppDir/ || true
+	cp --force AppDir/*.desktop build/Boilerplate.AppDir/ || true
+	cp --force AppDir/*.png     build/Boilerplate.AppDir/ || true
+	cp --force AppDir/*.svg     build/Boilerplate.AppDir/ || true
 
 	ARCH=x86_64 ./appimagetool build/Boilerplate.AppDir Chromium.AppImage
-	ls; exit
 	chmod +x Chromium.AppImage
 
 init:
@@ -55,6 +53,4 @@ init:
 	chmod +x apprepo appimagetool
 
 clean:
-	rm -rf $(PWD)/*.AppImage
-	rm -rf $(PWD)/bin/*
-	rm -rf $(PWD)/build
+	rm -rf *.AppImage build

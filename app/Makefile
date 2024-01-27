@@ -22,13 +22,13 @@ all: clean init
 	    libreadline8 at-spi2-core libpango-1.0-0 libselinux1 \
 	    libgtk-3-0 libwayland-cursor0
 
-	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo 'LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${APPDIR}/chromium'    >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo 'export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}'                 >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo ''                                                           >> $(PWD)/build/Boilerplate.AppDir/AppRun
-	echo 'exec $${APPDIR}/chromium/chrome "$${@}"'                    >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	printf '%s\n'                                                  \
+		 ''                                                        \
+		 'LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${APPDIR}/chromium' \
+		 'export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}'              \
+		 ''                                                        \
+		 ''                                                        \
+		 'exec $${APPDIR}/chromium/chrome "$${@}"'                 >> build/Boilerplate.AppDir/AppRun
 
 
 	wget --output-document=${PWD}/build/build.zip https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$(REVISION)%2Fchrome-linux.zip?alt=media
@@ -36,17 +36,17 @@ all: clean init
 
 	cp --force --recursive $(PWD)/build/chrome-linux/* $(PWD)/build/Boilerplate.AppDir/chromium
 
-	rm -f $(PWD)/build/Boilerplate.AppDir/*.desktop 		     || true
-	rm -f $(PWD)/build/Boilerplate.AppDir/*.png 		  	     || true
-	rm -f $(PWD)/build/Boilerplate.AppDir/*.svg 		  	     || true
-	rm -f $(PWD)/build/Boilerplate.AppDir/lib64/libstdc++.so.6*  || true
+	rm -f $(PWD)/build/Boilerplate.AppDir/*.desktop 		    \
+	      $(PWD)/build/Boilerplate.AppDir/*.png 		  	    \
+	      $(PWD)/build/Boilerplate.AppDir/*.svg 		  	    \
+	      $(PWD)/build/Boilerplate.AppDir/lib64/libstdc++.so.6*
 
-	cp --force $(PWD)/AppDir/*.desktop $(PWD)/build/Boilerplate.AppDir/       || true
-	cp --force $(PWD)/AppDir/*.png     $(PWD)/build/Boilerplate.AppDir/       || true
-	cp --force $(PWD)/AppDir/*.svg     $(PWD)/build/Boilerplate.AppDir/       || true
+	cp --force $(PWD)/AppDir/*.desktop $(PWD)/build/Boilerplate.AppDir/ || true
+	cp --force $(PWD)/AppDir/*.png     $(PWD)/build/Boilerplate.AppDir/ || true
+	cp --force $(PWD)/AppDir/*.svg     $(PWD)/build/Boilerplate.AppDir/ || true
 
-	export ARCH=x86_64 && ./appimagetool $(PWD)/build/Boilerplate.AppDir Chromium.AppImage
-	chmod +x $(PWD)/Chromium.AppImage
+	ARCH=x86_64 ./appimagetool build/Boilerplate.AppDir Chromium.AppImage
+	chmod +x Chromium.AppImage
 
 init:
 	curl -o apprepo https://github.com/area-of-dev/apprepo.AppImage/releases/download/latest/apprepo.AppImage

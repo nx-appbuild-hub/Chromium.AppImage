@@ -46,6 +46,7 @@ all: clean init
 	cp --force $(PWD)/AppDir/*.svg     $(PWD)/build/Boilerplate.AppDir/ || true
 
 	ARCH=x86_64 ./appimagetool build/Boilerplate.AppDir Chromium.AppImage
+	ls; exit
 	chmod +x Chromium.AppImage
 
 init:

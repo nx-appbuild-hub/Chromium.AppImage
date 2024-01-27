@@ -50,7 +50,7 @@ all: clean init
 
 init:
 	curl -o apprepo https://github.com/area-of-dev/apprepo.AppImage/releases/download/latest/apprepo.AppImage
-	curl -o appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+	curl -o appimagetool https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
 	chmod +x apprepo appimagetool
 
 clean:
